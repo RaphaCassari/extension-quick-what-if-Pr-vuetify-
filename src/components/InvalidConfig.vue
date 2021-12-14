@@ -1,12 +1,12 @@
 <template>
   <div class="cover">
     <div class="error">
-      The extension needs to be
-      <a v-if="mode === 'authoring'" href="javascript:" @click="$emit('configure')"> configured.</a>
+      Esta extensão precisa ser 
+      <a v-if="mode === 'authoring'" href="javascript:" @click="$emit('configure')"> Configurada.</a>
       <span v-else>
-        configured.
+        Configurada.
         <br />
-        Please contact the dashboard author
+        Por favro, contate o Administrador do Painel
       </span>
     </div>
   </div>

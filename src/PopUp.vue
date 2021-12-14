@@ -1,18 +1,24 @@
 <template>
   <div class="container" id="app">
+    <v-alert type="success">oio</v-alert>
     <div class="unitLabel">{{ unitLabel }}</div>
     <div class="inputContainer" v-for="value in values" :key="value.name">
-      <Input v-if="selected.includes(value.name) || showAll" :label="value.name" :value="value.value" v-on:set-value="value.value = $event" />
+      <Input
+        v-if="selected.includes(value.name) || showAll"
+        :label="value.name"
+        :value="value.value"
+        v-on:set-value="value.value = $event"
+      />
     </div>
   </div>
 </template>
 
 <script>
 /* global tableau */
-import Input from './components/Input.vue';
+import Input from "./components/Input.vue";
 
 export default {
-  name: 'PopUp',
+  name: "PopUp",
   components: {
     Input,
   },
@@ -21,25 +27,27 @@ export default {
       values: [],
       selected: [],
       showAll: false,
-      unitLabel: '',
+      unitLabel: "",
     };
   },
   methods: {},
   watch: {
     // Updates the Tableau parameter when new values are entered
     values: {
-      handler: async function(items) {
+      handler: async function (items) {
         if (items.length === 0) return;
         const settings = tableau.extensions.settings.getAll();
         const dashboard = tableau.extensions.dashboardContent.dashboard;
         const parameter = await dashboard.findParameterAsync(settings.parameter);
-        parameter.changeValueAsync(items.map((item) => `{${item.name}|${item.value}}`).join(''));
+        parameter.changeValueAsync(
+          items.map((item) => `{${item.name}|${item.value}}`).join("")
+        );
       },
       deep: true,
     },
   },
   // Initialize the extension
-  created: async function() {
+  created: async function () {
     let payload = await tableau.extensions.initializeDialogAsync();
     payload = JSON.parse(payload);
     this.values = payload.values;
@@ -53,7 +61,7 @@ export default {
 <style>
 * {
   box-sizing: border-box;
-  font-family: 'Benton Sans', Helvetica, Arial, sans-serif;
+  font-family: "Benton Sans", Helvetica, Arial, sans-serif;
 }
 
 html,
@@ -100,7 +108,7 @@ body {
 
 .sectionTitle {
   margin: 18px 0px;
-  font-family: 'Benton Sans Medium', Helvetica, Arial, sans-serif;
+  font-family: "Benton Sans Medium", Helvetica, Arial, sans-serif;
   font-size: 12px;
 }
 

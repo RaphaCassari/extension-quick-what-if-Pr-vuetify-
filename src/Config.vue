@@ -7,15 +7,8 @@
     <ConfigSelect id="parameter" labelText="Select a storage parameter" :items="parameters" v-model="parameter" v-on:set-value="parameter = $event" />
     <ConfigSelect id="worksheet" labelText="Select a source worksheet" :items="worksheets" v-model="worksheet" v-on:set-value="worksheet = $event" />
     <ConfigSelect id="field" labelText="Select a field" :items="fields" v-model="field" v-on:set-value="field = $event" />
-    <div class="titleRow">
-      <span class="sectionTitle">Options</span>
-    </div>
-    <ButtonGroup id="location" labelText="Location of inputs" :items="locations" v-model="location" v-on:set-value="location = $event" />
-    <ButtonGroup id="display" labelText="Inputs to display" :items="displays" v-model="display" v-on:set-value="display = $event" />
-    <ButtonGroup id="trigger" labelText="Trigger" :items="triggers" v-model="trigger" v-on:set-value="trigger = $event" :disabled="display === 0 && location === 1" />
     <div class="spreadRow" v-if="labelsSet">
       <react-TextField kind="line" label="Unit label" className="fullWidth" maxlength="30" :defaultValue="unitLabel" @onChange="unitLabel = $event.target.value" data-test="unitLabel"></react-TextField>
-      <react-TextField kind="line" label="Button text" className="fullWidth" maxlength="30" :defaultValue="selectBtnLabel" @onChange="selectBtnLabel = $event.target.value" :disabled="trigger === 0 || (display === 0 && location === 1)" data-test="selectBtnLabel"></react-TextField>
     </div>
     <div class="saveButton">
       <react-Button kind="primary" :disabled="!validConfig" @onClick="save" data-test="saveButton">Save Settings</react-Button>
@@ -29,15 +22,12 @@ import { ReactInVue } from 'vuera';
 import { Button, TextField } from '@tableau/tableau-ui';
 import ConfigSelect from './components/ConfigSelect.vue';
 import ConfigInfoTip from './components/ConfigInfoTip.vue';
-import ButtonGroup from './components/ButtonGroup.vue';
-import { locations, triggers, displays } from './components/variables.js';
 
 export default {
   name: 'Config',
   components: {
     ConfigSelect,
     ConfigInfoTip,
-    ButtonGroup,
     'react-Button': ReactInVue(Button),
     'react-TextField': ReactInVue(TextField),
   },
@@ -50,11 +40,8 @@ export default {
       field: '',
       fields: [],
       location: 0,
-      locations,
-      trigger: 0,
-      triggers,
-      display: 0,
-      displays,
+      trigger: 1,
+      display: 1,
       unitLabel: '',
       selectBtnLabel: '',
       labelsSet: false,
@@ -114,7 +101,7 @@ export default {
         tableau.extensions.settings.set('trigger', this.trigger);
         tableau.extensions.settings.set('display', this.display);
         tableau.extensions.settings.set('unitLabel', this.unitLabel);
-        tableau.extensions.settings.set('selectBtnLabel', this.selectBtnLabel);
+        tableau.extensions.settings.set('selectBtnLabel', "Aplicar Filtro");
         await tableau.extensions.settings.saveAsync();
         tableau.extensions.ui.closeDialog('');
       }
@@ -134,7 +121,6 @@ export default {
     this.trigger = settings.trigger ? parseInt(settings.trigger) : this.trigger;
     this.display = settings.display ? parseInt(settings.display) : this.display;
     this.unitLabel = settings.unitLabel ? settings.unitLabel : '##';
-    this.selectBtnLabel = settings.selectBtnLabel ? settings.selectBtnLabel : 'Select';
     this.labelsSet = true;
     this.getParameters();
     this.getWorksheets();
